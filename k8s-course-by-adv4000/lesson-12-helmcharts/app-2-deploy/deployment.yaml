@@ -1,0 +1,21 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: my-web-2-deployment
+  labels:
+    app : my-k8s-2-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      project: temp-2
+  template:
+    metadata:
+      labels:
+        project: temp-2 # service will look for pods with those labels
+    spec:
+      containers:
+        - name: temp-2-web
+          image: fromme/k8sphptest:latest
+          ports:
+            - containerPort: 80

@@ -1,0 +1,14 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: my-eks-cluster
+  region: us-east-1
+
+nodeGroups:
+  - name: worker-node-1
+    instanceType: t3.nano
+    desiredCapacity: 2
+  - name: worker-node-2
+    instanceType: t2.large
+    desiredCapacity: 1
