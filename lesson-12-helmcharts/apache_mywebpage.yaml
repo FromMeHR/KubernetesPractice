@@ -1,0 +1,4 @@
+cloneHtdocsFromGit:
+  enabled : true # get the server static content from a git repository
+  repository : https://github.com/adv4000/simplewebpage
+  branch : main
