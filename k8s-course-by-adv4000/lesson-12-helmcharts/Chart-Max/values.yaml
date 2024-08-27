@@ -1,6 +1,0 @@
-# Default values for my helm chart
-
-container:
-  image: fromme/k8sphptest:latest
-
-replicaCount: 2

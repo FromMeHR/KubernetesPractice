@@ -1,4 +1,0 @@
-container:
-  image: fromme/k8sphptest:latest
-
-replicaCount: 4
