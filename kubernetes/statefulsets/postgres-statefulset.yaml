@@ -1,22 +1,23 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: django-app-psql
+  name: postgres
   namespace: default
   labels:
-    app: db-k8s
+    app: postgres-db
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: db
+  serviceName: postgres
   template:
     metadata:
       labels:
         app: db
     spec:
       containers:
-      - name: pg-db
+      - name: postgres-db
         image: postgres:15
         ports:
         - containerPort: 5432
@@ -24,48 +25,39 @@ spec:
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:
-              name: app-configmap
+              name: postgres-config
               key: DB_NAME
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: app-secret
+              name: app-secrets
               key: DB_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: app-secret
+              name: app-secrets
               key: DB_PASSWORD
         volumeMounts:
-        - name: pg-data
+        - name: pg-persistent-storage
           mountPath: /var/lib/postgresql/data
-      volumes:
-      - name: pg-data
-        persistentVolumeClaim:
-          claimName: postgres-pvc
-      restartPolicy: Always
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-  namespace: default
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: pg-persistent-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: nfs-client
+        resources:
+          requests:
+            storage: 2Gi
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: django-app-psql
+  name: postgres
   namespace: default
 spec:
-  type: ClusterIP
+  clusterIP: None
   selector:
     app: db
   ports:

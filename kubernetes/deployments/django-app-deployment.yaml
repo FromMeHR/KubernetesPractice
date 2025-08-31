@@ -23,20 +23,16 @@ spec:
         ports:
         - containerPort: 8000
         envFrom:
-        - configMapRef:
-            name: app-configmap
         - secretRef:
-            name: app-secret
+            name: app-secrets
       initContainers:
       - name: app-migrate
         image: ghcr.io/frommehr/kubernetespractice-web:django-k8s
         imagePullPolicy: Always
         command: ["python", "manage.py", "migrate"]
         envFrom:
-        - configMapRef:
-            name: app-configmap
         - secretRef:
-            name: app-secret
+            name: app-secrets
 
 ---
 apiVersion: autoscaling/v2
